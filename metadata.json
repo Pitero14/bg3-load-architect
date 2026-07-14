@@ -1,0 +1,6 @@
+{
+  "name": "BG3 Load Order Organizer",
+  "description": "A minimalist single-screen tool to organize, sort, and detect conflicts in Baldur's Gate 3 mod lists (modsettings.lsx) with Nexus Mods integration and logical categorization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

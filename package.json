@@ -1,0 +1,82 @@
+{
+  "name": "bg3-load-architect",
+  "private": true,
+  "version": "2.0.0",
+  "description": "AI-powered load order organizer for Baldur's Gate 3",
+  "author": "Pietro",
+  "license": "MIT",
+  "homepage": "https://github.com/Pitero14/bg3-load-architect",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pitero14/bg3-load-architect.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Pitero14/bg3-load-architect/issues"
+  },
+  "keywords": [
+    "baldurs-gate-3",
+    "bg3",
+    "load-order",
+    "mod-manager",
+    "electron",
+    "react",
+    "typescript"
+  ],
+  "type": "module",
+  "main": "main.cjs",
+  "scripts": {
+    "dev": "tsx server.ts",
+    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "start": "node dist/server.cjs",
+    "clean": "rm -rf dist server.js",
+    "lint": "tsc --noEmit",
+    "electron:start": "npm run build && electron .",
+    "electron:pack": "npm run build && electron-builder --win portable",
+    "electron:dist": "npm run build && electron-builder"
+  },
+  "dependencies": {
+    "@google/genai": "^2.4.0",
+    "@tailwindcss/vite": "^4.1.14",
+    "@vitejs/plugin-react": "^5.0.4",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.14.0",
+    "autoprefixer": "^10.4.21",
+    "electron": "^43.1.0",
+    "electron-builder": "^26.15.3",
+    "esbuild": "^0.25.0",
+    "tailwindcss": "^4.1.14",
+    "tsx": "^4.21.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.4.3"
+  },
+  "build": {
+    "appId": "it.pietro.bg3loadarchitect",
+    "productName": "BG3 Load Architect",
+    "copyright": "Copyright © 2026 Pietro",
+    "directories": {
+      "output": "dist-electron",
+      "buildResources": "build"
+    },
+    "files": [
+      "package.json",
+      "main.cjs",
+      "dist/**/*",
+      "node_modules/**/*"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "build/icon.ico"
+    }
+  }
+}
