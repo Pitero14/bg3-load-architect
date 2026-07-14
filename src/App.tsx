@@ -43,7 +43,7 @@ import {
 
 const TRANSLATIONS = {
   it: {
-    appTitle: "BG3 Load Order Organizer",
+    appTitle: "BG3 Load Architect",
     appSubtitle: "VERSIONE DI SISTEMA: 2.2.0-STABLE | COMPILATORE & LINTER DI MODSETTINGS.LSX",
     loadSample: "Carica Esempio Disordinato",
     clear: "Svuota",
@@ -178,7 +178,7 @@ const TRANSLATIONS = {
     noLink: "Nessun Link"
   },
   en: {
-    appTitle: "BG3 Load Order Organizer",
+    appTitle: "BG3 Load Architect",
     appSubtitle: "SYSTEM VERSION: 2.2.0-STABLE | MODSETTINGS.LSX COMPILER & LINTER",
     loadSample: "Load Unsorted Example",
     clear: "Clear",
