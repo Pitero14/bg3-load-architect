@@ -1,56 +1,70 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
-const http = require('http');
+const { app, BrowserWindow } = require("electron");
+const http = require("http");
 
 let mainWindow;
 
-// Set environment variables for production if not specified
+console.log("1 - Electron starting...");
+
+// Production
 if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = 'production';
+  process.env.NODE_ENV = "production";
 }
 
-// Ensure the Express server knows where to find the static files in the packaged environment
 process.env.ELECTRON_APP_PATH = app.getAppPath();
 
-// Require and start the Express server
+console.log("2 - Loading Express server...");
+
 try {
-  require('./dist/server.cjs');
+  require("./dist/server.cjs");
+  console.log("3 - Express server loaded.");
 } catch (err) {
-  console.error('Failed to start Express server:', err);
+  console.error("Failed to start Express server:");
+  console.error(err);
 }
 
 function createWindow() {
+  console.log("4 - Creating BrowserWindow...");
+
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 850,
+    title: "BG3 Load Architect",
+    autoHideMenuBar: true,
+    backgroundColor: "#1b1b1b",
+
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: true
-    },
-    title: "BG3 Load Order Organizer & Optimizer",
-    autoHideMenuBar: true
+    }
   });
 
-  // Poll until the server is up and running before loading the page
+  // Apri automaticamente la console
+  mainWindow.webContents.openDevTools({ mode: "detach" });
+
   function checkServerReady(callback) {
-    const req = http.get('http://127.0.0.1:3000/api/health', (res) => {
-      if (res.statusCode === 200) {
-        callback(true);
-      } else {
-        callback(false);
-      }
+    const req = http.get("http://127.0.0.1:3000/api/health", (res) => {
+      callback(res.statusCode === 200);
     });
-    req.on('error', () => {
-      callback(false);
-    });
+
+    req.on("error", () => callback(false));
     req.end();
   }
 
+  let attempts = 0;
+
   function pollServer() {
+    attempts++;
+
+    if (attempts % 10 === 0) {
+      console.log(`Waiting for server... (${attempts})`);
+    }
+
     checkServerReady((ready) => {
       if (ready) {
-        mainWindow.loadURL('http://127.0.0.1:3000');
+        console.log("5 - Server is ready.");
+        console.log("6 - Loading React app...");
+        mainWindow.loadURL("http://127.0.0.1:3000");
       } else {
         setTimeout(pollServer, 100);
       }
@@ -59,23 +73,37 @@ function createWindow() {
 
   pollServer();
 
-  mainWindow.on('closed', () => {
+  mainWindow.webContents.on("did-finish-load", () => {
+    console.log("7 - React loaded successfully.");
+  });
+
+  mainWindow.webContents.on(
+    "did-fail-load",
+    (event, code, desc) => {
+      console.error("FAILED TO LOAD");
+      console.error(code);
+      console.error(desc);
+    }
+  );
+
+  mainWindow.on("closed", () => {
     mainWindow = null;
   });
 }
 
 app.whenReady().then(() => {
+  console.log("8 - App ready.");
   createWindow();
 
-  app.on('activate', () => {
+  app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
   });
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
